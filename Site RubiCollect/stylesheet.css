@@ -1,0 +1,36 @@
+body {
+    background-color: #F5DEB1;
+    margin: 0;
+    padding: 0;
+}
+
+a{
+    color: #F5DEB1;
+    text-decoration-line: none;
+}
+
+#navbar {
+    /**texte**/
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    gap: 50px;
+    font-size: 50px;
+    color: #F5DEB1;
+    
+    /**navbar**/
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+    background-color: #DF6948;
+    height: 110px;
+}
+
+#logo {
+    position: absolute;
+    left: 10px;
+    height: 100px;
+}
+
+
+
