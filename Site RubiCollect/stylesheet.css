@@ -1,12 +1,16 @@
 body {
-    background-color: #F5DEB1;
+    background-color: #C4DEA8;
     margin: 0;
     padding: 0;
 }
 
 a{
-    color: #F5DEB1;
+    color: white;
     text-decoration-line: none;
+}
+
+a:hover{
+    text-decoration-line: underline;
 }
 
 #navbar {
@@ -15,15 +19,16 @@ a{
     justify-content: center; 
     align-items: center;
     gap: 50px;
-    font-size: 50px;
-    color: #F5DEB1;
+    font-size: 25px;
+    font-family: "Pinecone_MVB";
     
     /**navbar**/
     position: sticky;
     top: 0;
     overflow: hidden;
-    background-color: #DF6948;
+    background-color: #465FAF;
     height: 110px;
+    z-index: 10;
 }
 
 #logo {
@@ -32,5 +37,35 @@ a{
     height: 100px;
 }
 
+@font-face {
+    font-family: "Pinecone_MVB";
+    src: url(Pinecone_MVB.otf);
+}
+
+#rubicollect{
+    font-family: "Pinecone_MVB";
+    color: white;
+    font-size: 82px;
+    position: absolute;
+    left: 650px;
+    top:350px;
+}
+
+h1{
+    font-family: "Pinecone_MVB";
+    color: white;
+}
+
+p{
+    font-family: "Pinecone_MVB";
+    color: white;
+}
+
+#expli_rubicollect{
+    max-width: 800px;
+    margin: 0 auto;    
+    padding: 20px;     
+    text-align: left;    
+}
 
 
