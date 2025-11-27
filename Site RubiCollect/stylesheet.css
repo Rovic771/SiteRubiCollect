@@ -31,6 +31,30 @@ a:hover{
     z-index: 10;
 }
 
+#BottomBar{
+    overflow: hidden;
+    background-color: #465FAF;
+    height: 500px;
+}
+
+#BottomBarTextSoutenir{
+    position: absolute;
+    top: 2350px;
+    left: 13%;
+}
+
+#TextBottomBarRejoindre{
+    position: absolute;
+    top: 2350px;
+    left: 47%;
+}
+
+#TextBottomBarEvent{
+    position: absolute;
+    top: 2350px;
+    left: 77%;
+}
+
 #logo {
     position: absolute;
     left: 10px;
@@ -68,4 +92,54 @@ p{
     text-align: left;    
 }
 
+#causes_texte{
+    position: absolute;
+    left: 425px;
+    top:2025px;
+}
 
+#text_agir{
+    text-align: left;
+    margin-left: 25%;
+    max-width: 1000px;
+}
+
+#img_agir{
+    text-align: center;
+}
+
+#logo_msf{
+    position: absolute;
+    left: 425px;
+    top:2125px;
+}
+
+#logo_sea{
+    position: absolute;
+    left: 625px;
+    top:2125px;
+}
+
+#logo_sos{
+    position: absolute;
+    left: 925px;
+    top:2125px;
+}
+
+#logo_fondation{
+    position: absolute;
+    left: 1225px;
+    top:2125px;
+}
+
+button{
+    background-color: #C4DEA8;
+    font-family: "Pinecone_MVB";
+    color: #465FAF;
+}
+
+#DonBottomBar{
+    position: absolute;
+    top:2750px;
+    left:40px;
+}
