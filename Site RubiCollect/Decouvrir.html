@@ -66,12 +66,40 @@
 
 <br> <br>
 
-<div id="DonBottomBar">
-    <button style="height:60px;width:100px">Faire un don</button>
+<div class="BottomBar"><img src="BottomBar.png">
+    <button class="ButtonDon"style="height:60px;width:100px">Faire un don</button>
+    <img class="paypal" src="paypal.png" alt="paypal logo">
+    <div class="FormulaireContact">
+        <form>
+            <table>
+                
+                <tr>
+                    <td><p>Votre nom/âge</p></td>
+                </tr>
+                <tr>
+                    <td><input type="text" id="firstname" name="firstname" maxlength="20" placeholder="Prénom" required></td>
+                    <td><input type="text" id="lastname" name="lastname" maxlength="20" placeholder="Nom" required></td>
+                    <td><input type="number" id="old" name="old" placeholder="Indiquez votre âge"></td>
+                </tr>
+                <tr>
+                    <td></ts><p>Votre adresse mail</p></td>
+                </tr>
+                <tr>
+                    <td><input type="email" id="email" name="email" required></td>
+                </tr>
+                <tr>
+                    <td><p>Message</p></td>
+                </tr>
+                <tr>
+                    <td><input type="text" id="subject" name="old" placeholder="sujet"></td>
+                </tr>
+            </table>
+            <textarea class="message" placeholder="Décrivez la raison de votre réclamation..." maxlength="1000" id="message" name="message" rows="5" cols="50" required></textarea>
+        </form>
+    </div>
 </div>
 
-<div class="BottomBar">
-    <img src="BottomBar.png">
-</div>
+
+
 </body>
 </html>

@@ -99,6 +99,43 @@ a:hover{
     display: block;
 }
 
+.ButtonDon{
+    position: absolute;
+    left: 3%;
+    top: 85%;
+    transform: translate(-50%, -50%);
+    border-radius: 50px;
+}
+
+.FormulaireContact{
+    position: absolute;
+    left: 52%;
+    top: 60%;
+    transform: translate(-50%, -50%);
+    border-radius: 50px;
+}
+
+.message{
+    position: absolute;
+    left: 52%;
+    top: 60%;
+    transform: translate(-50%, -50%);
+}
+
+.paypal{
+    position: absolute;
+    left: 20%;
+    top: 85%;
+    transform: translate(-50%, -50%);
+}
+
+.paypal{
+    width: auto;
+    height: auto;
+    max-width: 50px;
+    max-height: 50px;
+}
+
 .BottomBarContact{
     position: absolute;
     left: 41%;
