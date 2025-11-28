@@ -31,12 +31,6 @@ a:hover{
     z-index: 10;
 }
 
-#BottomBar{
-    overflow: hidden;
-    background-color: #465FAF;
-    height: 500px;
-}
-
 #BottomBarTextSoutenir{
     position: absolute;
     top: 2350px;
@@ -66,13 +60,22 @@ a:hover{
     src: url(Pinecone_MVB.otf);
 }
 
-#rubicollect{
-    font-family: "Pinecone_MVB";
-    color: white;
-    font-size: 82px;
-    position: absolute;
-    left: 650px;
-    top:350px;
+.rubicollect img{
+    width: 100%;
+    height: 800px;
+    display: block;
+}
+
+.causes img{
+    width: 100%;
+    height: 1000px;
+    display: block;
+}
+
+.BottomBar img{
+    width: 100%;
+    height: 800px;
+    display: block;
 }
 
 h1{
@@ -92,54 +95,29 @@ p{
     text-align: left;    
 }
 
-#causes_texte{
-    position: absolute;
-    left: 425px;
-    top:2025px;
-}
-
-#text_agir{
+.agir{
     text-align: left;
     margin-left: 25%;
     max-width: 1000px;
+    position: relative;
 }
 
-#img_agir{
+.agir img{
     text-align: center;
+    width: 1200px;
+    height: 400px;
 }
 
-#logo_msf{
+.text_agir{
     position: absolute;
-    left: 425px;
-    top:2125px;
-}
-
-#logo_sea{
-    position: absolute;
-    left: 625px;
-    top:2125px;
-}
-
-#logo_sos{
-    position: absolute;
-    left: 925px;
-    top:2125px;
-}
-
-#logo_fondation{
-    position: absolute;
-    left: 1225px;
-    top:2125px;
+    left: 60%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
 }
 
 button{
     background-color: #C4DEA8;
     font-family: "Pinecone_MVB";
     color: #465FAF;
-}
-
-#DonBottomBar{
-    position: absolute;
-    top:2750px;
-    left:40px;
 }
