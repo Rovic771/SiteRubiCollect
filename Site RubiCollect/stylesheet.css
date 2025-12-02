@@ -129,7 +129,7 @@ a:hover{
 .ButtonContact{
     position: absolute;
     left: 90%;
-    top: 130%;
+    top: 125%;
     transform: translate(-50%, -50%);
     border-radius: 50px;
 }
@@ -181,6 +181,11 @@ h1{
 }
 
 h2{
+    font-family: "Pinecone_MVB";
+    color: white;
+}
+
+h3{
     font-family: "Pinecone_MVB";
     color: white;
 }

@@ -49,30 +49,39 @@
 </table>
 
 <div class="BottomBar"><img src="BottomBar.png">
+    <div class="soutenir">
+        <p>N'hésitez pas à nous soutenir avec un petit don !</p>
+    </div>
     <button class="ButtonDon" id="boutonDon" style="height:60px;width:100px">Faire un don</button>
     <img class="paypal" src="paypal.png" alt="paypal logo">
     <img class="cb" src="cb.png" alt="cb logo">
     <img class="robux" src="robux.png" alt="robux logo">
+
+    <p id="message-statut" style="text-align: center; margin: 10px 0;"></p>
+
     <div class="FormulaireContact">
-        <form>
+        <form id="contact-form-final"
+              action="mailto:votreemail@example.com?subject=Demande%20de%20contact%20via%20le%20site"
+              method="post"
+              enctype="text/plain">
             <table>
                 <tr>
-                    <td><p>Votre nom/âge</p></td>
+                    <td><h3>Votre nom/âge</h3></td>
                 </tr>
                 <tr>
-                    <td><input type="text" id="firstname" name="firstname" maxlength="20" placeholder="Prénom" required></td>
-                    <td><input type="text" id="lastname" name="lastname" maxlength="20" placeholder="Nom" required></td>
-                    <td><input type="number" id="old" name="old" placeholder="Indiquez votre âge" required></td>
+                    <td><input type="text" id="firstname" name="Prénom" maxlength="20" placeholder="Prénom" required></td>
+                    <td><input type="text" id="lastname" name="Nom" maxlength="20" placeholder="Nom" required></td>
+                    <td><input type="number" id="old" name="Âge" placeholder="Indiquez votre âge" required></td>
                 </tr>
                 <tr>
-                    <td><p>Moyen de contact</p></td>
+                    <td><h3>Moyen de contact</h3></td>
                 </tr>
                 <tr>
-                    <td><input type="text" id="mail" name="mail" placeholder="Adresse mail" required></td>
-                    <td><input type="text" id="numero" name="numero" placeholder="Numero de telephone" required></td>
+                    <td><input type="email" id="mail" name="Adresse_mail" placeholder="Adresse mail" required></td>
+                    <td><input type="text" id="numero" name="Numéro_de_téléphone" placeholder="Numero de telephone" required></td>
                 </tr>
             </table>
-            <button class="ButtonContact"style="height:60px;width:100px">Confirmer</button>
+            <button class="ButtonContact" type="submit" style="height:60px;width:100px">CONFIRMER</button>
         </form>
     </div>
     <div class="avis">

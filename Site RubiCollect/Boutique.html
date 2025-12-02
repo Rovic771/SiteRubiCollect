@@ -13,48 +13,7 @@
         <a href="Agir.html">Agir</a>
 </div>
 
-<div id="donation-page-container">
 
-    <h2 id="donation-title">Soutenez l'association Rubicollect</h2>
-
-    <p id="donation-intro">
-        Chaque don, petit ou grand, nous aide à financer nos actions solidaires et nos événements. Merci pour votre générosité !
-    </p>
-
-    <div id="donation-options">
-        <h3>Choisissez un montant :</h3>
-        <div class="amount-buttons">
-            <button class="donation-amount-btn" data-amount="5">5 €</button>
-            <button class="donation-amount-btn" data-amount="10">10 €</button>
-            <button class="donation-amount-btn" data-amount="20">20 €</button>
-            <button class="donation-amount-btn" data-amount="50">50 €</button>
-        </div>
-
-        <div class="custom-amount">
-            <label for="custom-input">Ou entrez un autre montant :</label>
-            <input type="number" id="custom-input" placeholder="Montant libre (€)">
-        </div>
-    </div>
-
-    <hr>
-
-    <div id="payment-section">
-        <h3>Procéder au paiement :</h3>
-        <button id="proceed-to-payment-btn">
-            Faire un don de <span id="display-amount">5</span> €
-        </button>
-
-        <p class="payment-note">
-            Vous serez redirigé vers une page de paiement sécurisée (PayPal, Carte Bancaire, etc.).
-        </p>
-
-        <div class="payment-icons">
-            <img src="paypal.png" alt="Payer avec PayPal">
-            <img src="cb.png" alt="Payer par Carte Bancaire">
-        </div>
-    </div>
-
-</div>
 
 <div class="BottomBar"><img src="BottomBar.png">
     <div class="soutenir">
@@ -68,28 +27,25 @@
     <p id="message-statut" style="text-align: center; margin: 10px 0;"></p>
 
     <div class="FormulaireContact">
-        <form id="contact-form-final"
-              action="mailto:votreemail@example.com?subject=Demande%20de%20contact%20via%20le%20site"
-              method="post"
-              enctype="text/plain">
+        <form id="contact-form-final">
             <table>
                 <tr>
-                    <td><h3>Votre nom/âge</h3></td>
+                    <td><p>Votre nom/âge</p></td>
                 </tr>
                 <tr>
-                    <td><input type="text" id="firstname" name="Prénom" maxlength="20" placeholder="Prénom" required></td>
-                    <td><input type="text" id="lastname" name="Nom" maxlength="20" placeholder="Nom" required></td>
-                    <td><input type="number" id="old" name="Âge" placeholder="Indiquez votre âge" required></td>
+                    <td><input type="text" id="firstname" name="firstname" maxlength="20" placeholder="Prénom" required></td>
+                    <td><input type="text" id="lastname" name="lastname" maxlength="20" placeholder="Nom" required></td>
+                    <td><input type="number" id="old" name="old" placeholder="Indiquez votre âge" required></td>
                 </tr>
                 <tr>
-                    <td><h3>Moyen de contact</h3></td>
+                    <td><p>Moyen de contact</p></td>
                 </tr>
                 <tr>
-                    <td><input type="email" id="mail" name="Adresse_mail" placeholder="Adresse mail" required></td>
-                    <td><input type="text" id="numero" name="Numéro_de_téléphone" placeholder="Numero de telephone" required></td>
+                    <td><input type="email" id="mail" name="mail" placeholder="Adresse mail" required></td>
+                    <td><input type="text" id="numero" name="numero" placeholder="Numero de telephone" required></td>
                 </tr>
             </table>
-            <button class="ButtonContact" type="submit" style="height:60px;width:100px">CONFIRMER</button>
+            <button class="ButtonContact" type="submit" style="height:60px;width:100px">Confirmer</button>
         </form>
     </div>
     <div class="avis">
@@ -137,6 +93,5 @@
     });
     
 </script>
-
 </body>
 </html>
