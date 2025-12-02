@@ -67,39 +67,45 @@
 <br> <br>
 
 <div class="BottomBar"><img src="BottomBar.png">
-    <button class="ButtonDon"style="height:60px;width:100px">Faire un don</button>
+    <div class="soutenir">
+        <p>N'hésitez pas à nous soutenir avec un petit don !</p>
+    </div>
+    <button class="ButtonDon" id="boutonDon" style="height:60px;width:100px">Faire un don</button>
     <img class="paypal" src="paypal.png" alt="paypal logo">
+    <img class="cb" src="cb.png" alt="cb logo">
+    <img class="robux" src="robux.png" alt="robux logo">
     <div class="FormulaireContact">
         <form>
             <table>
-                
                 <tr>
                     <td><p>Votre nom/âge</p></td>
                 </tr>
                 <tr>
                     <td><input type="text" id="firstname" name="firstname" maxlength="20" placeholder="Prénom" required></td>
                     <td><input type="text" id="lastname" name="lastname" maxlength="20" placeholder="Nom" required></td>
-                    <td><input type="number" id="old" name="old" placeholder="Indiquez votre âge"></td>
+                    <td><input type="number" id="old" name="old" placeholder="Indiquez votre âge" required></td>
                 </tr>
                 <tr>
-                    <td></ts><p>Votre adresse mail</p></td>
+                    <td><p>Moyen de contact</p></td>
                 </tr>
                 <tr>
-                    <td><input type="email" id="email" name="email" required></td>
-                </tr>
-                <tr>
-                    <td><p>Message</p></td>
-                </tr>
-                <tr>
-                    <td><input type="text" id="subject" name="old" placeholder="sujet"></td>
+                    <td><input type="text" id="mail" name="mail" placeholder="Adresse mail" required></td>
+                    <td><input type="text" id="numero" name="numero" placeholder="Numero de telephone" required></td>
                 </tr>
             </table>
-            <textarea class="message" placeholder="Décrivez la raison de votre réclamation..." maxlength="1000" id="message" name="message" rows="5" cols="50" required></textarea>
+            <button class="ButtonContact"style="height:60px;width:100px">Confirmer</button>
         </form>
+    </div>
+    <div class="avis">
+        <p>Vous pouvez nous laisser un avis sur nos équipes et nos événements juste <a href="Avis.html">ici</a></p>
     </div>
 </div>
 
-
+<script>
+    document.getElementById('boutonDon').addEventListener('click', function() {
+        window.location.href = 'Don.html';
+    });
+</script>
 
 </body>
 </html>

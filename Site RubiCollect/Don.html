@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+<div id="navbar">
+
+        <img src="logo_rubicollect.png" id="logo">
+        <a href="Decouvrir.html">Découvrir</a>
+        <a href="Agir.html">Agir</a>
+</div>
+
+<div id="donation-page-container">
+
+    <h2 id="donation-title">Soutenez l'association Rubicollect</h2>
+
+    <p id="donation-intro">
+        Chaque don, petit ou grand, nous aide à financer nos actions solidaires et nos événements. Merci pour votre générosité !
+    </p>
+
+    <div id="donation-options">
+        <h3>Choisissez un montant :</h3>
+        <div class="amount-buttons">
+            <button class="donation-amount-btn" data-amount="5">5 €</button>
+            <button class="donation-amount-btn" data-amount="10">10 €</button>
+            <button class="donation-amount-btn" data-amount="20">20 €</button>
+            <button class="donation-amount-btn" data-amount="50">50 €</button>
+        </div>
+
+        <div class="custom-amount">
+            <label for="custom-input">Ou entrez un autre montant :</label>
+            <input type="number" id="custom-input" placeholder="Montant libre (€)">
+        </div>
+    </div>
+
+    <hr>
+
+    <div id="payment-section">
+        <h3>Procéder au paiement :</h3>
+        <button id="proceed-to-payment-btn">
+            Faire un don de <span id="display-amount">5</span> €
+        </button>
+
+        <p class="payment-note">
+            Vous serez redirigé vers une page de paiement sécurisée (PayPal, Carte Bancaire, etc.).
+        </p>
+
+        <div class="payment-icons">
+            <img src="paypal.png" alt="Payer avec PayPal">
+            <img src="cb.png" alt="Payer par Carte Bancaire">
+        </div>
+    </div>
+
+</div>
+
+<div class="BottomBar"><img src="BottomBar.png">
+    <button class="ButtonDon" id="boutonDon" style="height:60px;width:100px">Faire un don</button>
+    <img class="paypal" src="paypal.png" alt="paypal logo">
+    <img class="cb" src="cb.png" alt="cb logo">
+    <img class="robux" src="robux.png" alt="robux logo">
+    <div class="FormulaireContact">
+        <form>
+            <table>
+                <tr>
+                    <td><p>Votre nom/âge</p></td>
+                </tr>
+                <tr>
+                    <td><input type="text" id="firstname" name="firstname" maxlength="20" placeholder="Prénom" required></td>
+                    <td><input type="text" id="lastname" name="lastname" maxlength="20" placeholder="Nom" required></td>
+                    <td><input type="number" id="old" name="old" placeholder="Indiquez votre âge" required></td>
+                </tr>
+                <tr>
+                    <td><p>Moyen de contact</p></td>
+                </tr>
+                <tr>
+                    <td><input type="text" id="mail" name="mail" placeholder="Adresse mail" required></td>
+                    <td><input type="text" id="numero" name="numero" placeholder="Numero de telephone" required></td>
+                </tr>
+            </table>
+            <button class="ButtonContact"style="height:60px;width:100px">Confirmer</button>
+        </form>
+    </div>
+    <div class="avis">
+        <p>Vous pouvez nous laisser un avis sur nos équipes et nos événements juste <a href="Avis.html">ici</a></p>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const amountButtons = document.querySelectorAll('.donation-amount-btn');
+        const customInput = document.getElementById('custom-input');
+        const displayAmount = document.getElementById('display-amount');
+        
+        function updateDisplay(amount) {
+            displayAmount.textContent = amount;
+        }
+        
+        amountButtons[0].classList.add('selected');
+        updateDisplay(amountButtons[0].dataset.amount);
+        
+        amountButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                amountButtons.forEach(btn => btn.classList.remove('selected'));
+                
+                this.classList.add('selected');
+                
+                customInput.value = '';
+                
+                updateDisplay(this.dataset.amount);
+            });
+        });
+        
+        customInput.addEventListener('input', function() {
+            amountButtons.forEach(btn => btn.classList.remove('selected'));
+            
+            let amount = parseFloat(this.value);
+            if (isNaN(amount) || amount < 1) {
+                amount = 0; 
+            }
+
+            updateDisplay(amount.toFixed(0)); 
+        });
+    });
+    document.getElementById('proceed-to-payment-btn').addEventListener('click', function() {
+        window.location.href = 'rib.png';
+    });
+    
+</script>
+
+</body>
+</html>

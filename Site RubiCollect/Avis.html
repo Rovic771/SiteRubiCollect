@@ -12,27 +12,41 @@
         <a href="Decouvrir.html">Découvrir</a>
         <a href="Agir.html">Agir</a>
 </div>
-<div class="agir">
-    <h1>Nous soutenir:</h1>
-    <p>Nous soutenir, c'est nous donner les moyens de venir en aide aux plus vulnérables</p>
-</div>
 
-<div class="agir"><img src="illus_aide.png">
-    <h1 class="text_agir">Faire un don</h1>
-</div>
+<h2>✏️ Laissez votre Avis</h2>
+<form id="avisForm">
 
-<div class="agir">
-    <h1>Nous rejoindre:</h1>
-    <p>RubiCollect rassemble plusieurs élèves venant de tout Rubika, tous motivé à aider son prochain grâce aux compétences acquises dans le cadre de l'enseignement de l'établissement</p>
-</div>
+    <div class="form-group">
+        <label for="prenom">Prénom :</label>
+        <input type="text" id="prenom">
+    </div>
 
-<div class="agir"><img src="illus_eleves.png">
-</div>
+    <div class="form-group">
+        <label for="nom">Nom :</label>
+        <input type="text" id="nom">
+    </div>
 
-<div class="agir">
-    <h1>Participer :</h1>
-    <p>Les événements de collecte solidaire sont cruciales pour atteindre nos objectifs</p>
-</div>
+    <div class="form-group">
+        <label for="avis">Votre Avis :</label>
+        <textarea id="avis"></textarea>
+    </div>
+
+    <button type="submit" id="submitBtn">Poster l'Avis</button>
+</form>
+
+
+<h2>⭐ Avis des Utilisateurs</h2>
+<table id="avisTable">
+    <thead>
+    <tr>
+        <th>Nom Complet</th>
+        <th>Avis</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
 
 <div class="BottomBar"><img src="BottomBar.png">
     <button class="ButtonDon" id="boutonDon" style="height:60px;width:100px">Faire un don</button>
@@ -67,6 +81,46 @@
 </div>
 
 <script>
+    document.getElementById('avisForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const prenom = document.getElementById('prenom').value;
+        const nom = document.getElementById('nom').value;
+        const avisText = document.getElementById('avis').value;
+
+        if (!avisText.trim()) {
+            alert("Veuillez écrire votre avis !");
+            return;
+        }
+
+        const tableBody = document.querySelector('#avisTable tbody');
+        const newRow = tableBody.insertRow(0);
+
+        const nomCell = newRow.insertCell(0);
+        const avisCell = newRow.insertCell(1);
+        const dateCell = newRow.insertCell(2);
+
+        const prenomPropre = prenom.trim();
+        const nomPropre = nom.trim();
+        let nomComplet;
+
+        if (prenomPropre === '' || nomPropre === '') {
+            nomComplet = "Anonyme";
+        } else {
+            nomComplet = `${prenomPropre} ${nomPropre.toUpperCase().charAt(0)}.`;
+        }
+
+        const date = new Date().toLocaleDateString('fr-FR', {
+            day: '2-digit', month: '2-digit', year: 'numeric'
+        });
+
+        nomCell.textContent = nomComplet;
+        avisCell.textContent = avisText;
+        dateCell.textContent = date;
+
+        document.getElementById('avisForm').reset();
+    });
+
     document.getElementById('boutonDon').addEventListener('click', function() {
         window.location.href = 'Don.html';
     });
