@@ -11,9 +11,16 @@
         <img src="logo_rubicollect.png" id="logo">
         <a href="Decouvrir.html">Découvrir</a>
         <a href="Agir.html">Agir</a>
+        <a href="Decouvrir.html">
+            <img src="caddie.png" class="panier">
+        </a>
 </div>
 
-
+<div class="main-content">
+    <h1 style="text-align: center; color: #465FAF; margin-top: 30px;">Nos Produits</h1>
+    <div id="liste-produits" class="produits-grid">
+    </div>
+</div>
 
 <div class="BottomBar"><img src="BottomBar.png">
     <div class="soutenir">
@@ -25,7 +32,7 @@
     <img class="robux" src="robux.png" alt="robux logo">
 
     <p id="message-statut" style="text-align: center; margin: 10px 0;"></p>
-
+    
     <div class="FormulaireContact">
         <form id="contact-form-final">
             <table>
@@ -53,45 +60,47 @@
     </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const amountButtons = document.querySelectorAll('.donation-amount-btn');
-        const customInput = document.getElementById('custom-input');
-        const displayAmount = document.getElementById('display-amount');
-        
-        function updateDisplay(amount) {
-            displayAmount.textContent = amount;
-        }
-        
-        amountButtons[0].classList.add('selected');
-        updateDisplay(amountButtons[0].dataset.amount);
-        
-        amountButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                amountButtons.forEach(btn => btn.classList.remove('selected'));
-                
-                this.classList.add('selected');
-                
-                customInput.value = '';
-                
-                updateDisplay(this.dataset.amount);
-            });
-        });
-        
-        customInput.addEventListener('input', function() {
-            amountButtons.forEach(btn => btn.classList.remove('selected'));
-            
-            let amount = parseFloat(this.value);
-            if (isNaN(amount) || amount < 1) {
-                amount = 0; 
-            }
+    function chargerProduits() {
+        const targetUrl = "https://ffw95cfxfg.execute-api.eu-north-1.amazonaws.com/produits?gp1=Romain";
 
-            updateDisplay(amount.toFixed(0)); 
-        });
-    });
-    document.getElementById('proceed-to-payment-btn').addEventListener('click', function() {
-        window.location.href = 'rib.png';
-    });
+        
+        
+        try {
+            fetch(targetUrl)
+            .then(response => {
+                return response.json();
+            })
+                .then(data =>{
+                    console.log(data)
+                    const produits = Array.isArray(data) ? data : (data.resources || []);
+
+                    const container = document.getElementById('liste-produits');
+                    container.innerHTML = "";
+
+                    produits.forEach(produit => {
+                        container.innerHTML += `
+                <div class="card">
+                    <img src="${produit.image}" alt="${produit.nom}" onerror="this.src='https://placehold.co/200x200?text=Image+Manquante'">
+                    <h3>${produit.nom}</h3>
+                    <p style="font-weight:bold; font-size:1.2em;">${produit.prix} €</p>
+                    <p>Stock : ${produit.nbStock}</p>
+                    <button onclick="alert('Ajouté au panier !')">Ajouter au panier</button>
+                </div>
+            `;
+                    });
+
+                    if (produits.length === 0) {
+                        container.innerHTML = "<p style='text-align:center; width:100%;'>Aucun produit trouvé pour le groupe Romain.</p>";
+                    }
+                })
+
+        } catch (error) {
+            console.error("Erreur lors de la récupération :", error);
+            document.getElementById('liste-produits').innerHTML = "<p>Impossible de charger les produits.</p>";
+        }
+    }
     
+    chargerProduits();
 </script>
 </body>
 </html>
