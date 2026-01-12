@@ -11,9 +11,10 @@
         <img src="logo_rubicollect.png" id="logo">
         <a href="Decouvrir.html">Découvrir</a>
         <a href="Agir.html">Agir</a>
-        <a href="Decouvrir.html">
+        <a href="Panier.html">
             <img src="caddie.png" class="panier">
         </a>
+        <a href="Boutique.html">Boutique Solidaire</a>
 </div>
 
 <div class="main-content">
@@ -60,46 +61,122 @@
     </div>
 </div>
 <script>
+    // Récupère le panier actuel
+    function getPanier() {
+        return JSON.parse(localStorage.getItem('monPanierRubicollect')) || [];
+    }
+
+    // 1. Fonction modifiée pour gérer le stock visuel
+    function ajouterAuPanier(nom, prix, image, stockMax, indexId) {
+        let panier = getPanier();
+        let produitExistant = panier.find(p => p.nom === nom);
+        let qteDansPanier = produitExistant ? produitExistant.qte : 0;
+
+        // VERIFICATION DU STOCK
+        if (qteDansPanier >= stockMax) {
+            alert("Désolé, ce produit n'est plus en stock !");
+            return; // On arrête tout, on n'ajoute pas
+        }
+
+        // Si on a du stock, on ajoute
+        if (produitExistant) {
+            produitExistant.qte += 1;
+        } else {
+            panier.push({
+                nom: nom,
+                prix: prix,
+                image: image,
+                qte: 1
+            });
+        }
+
+        localStorage.setItem('monPanierRubicollect', JSON.stringify(panier));
+
+        // MISE À JOUR VISUELLE IMMÉDIATE
+        // On récupère l'élément HTML qui affiche le stock pour ce produit précis
+        const elementStock = document.getElementById(`stock-${indexId}`);
+        if (elementStock) {
+            // On convertit le texte actuel en nombre, on enlève 1, et on réaffiche
+            let stockActuel = parseInt(elementStock.innerText.replace('Stock : ', ''));
+            let nouveauStock = stockActuel - 1;
+            elementStock.innerText = `Stock : ${nouveauStock}`;
+
+            // Petit bonus visuel : changer la couleur si stock 0
+            if (nouveauStock === 0) {
+                elementStock.style.color = "red";
+                elementStock.innerText = "Rupture de stock";
+            }
+        }
+
+        alert(nom + " ajouté ! (Stock restant : " + (stockMax - qteDansPanier - 1) + ")");
+    }
+
+    // 2. Fonction de chargement avec calcul du stock initial
     function chargerProduits() {
         const targetUrl = "https://ffw95cfxfg.execute-api.eu-north-1.amazonaws.com/produits?gp1=Romain";
 
-        
-        
         try {
             fetch(targetUrl)
-            .then(response => {
-                return response.json();
-            })
+                .then(response => response.json())
                 .then(data =>{
-                    console.log(data)
                     const produits = Array.isArray(data) ? data : (data.resources || []);
-
                     const container = document.getElementById('liste-produits');
                     container.innerHTML = "";
 
-                    produits.forEach(produit => {
+                    // On récupère le panier pour savoir ce qu'on a DÉJÀ pris
+                    const panierActuel = getPanier();
+
+                    produits.forEach((produit, index) => {
+                        // Sécurisation des textes
+                        const safeNom = produit.nom.replace(/'/g, "\\'");
+                        const safeImage = produit.image.replace(/'/g, "\\'");
+
+                        // CALCUL DU STOCK À AFFICHER
+                        // Stock Réel (API) moins ce qu'on a déjà dans le panier local
+                        const articleDansPanier = panierActuel.find(p => p.nom === produit.nom);
+                        const qteDejaPrise = articleDansPanier ? articleDansPanier.qte : 0;
+                        let stockVisuel = produit.nbStock - qteDejaPrise;
+
+                        // Gestion de l'affichage si rupture
+                        let texteStock = `Stock : ${stockVisuel}`;
+                        let couleurStock = "black";
+                        let disabled = "";
+
+                        if (stockVisuel <= 0) {
+                            stockVisuel = 0; // Pour éviter les négatifs
+                            texteStock = "Rupture de stock";
+                            couleurStock = "red";
+                            disabled = "disabled style='background-color:grey; cursor:not-allowed;'";
+                        }
+
                         container.innerHTML += `
                 <div class="card">
                     <img src="${produit.image}" alt="${produit.nom}" onerror="this.src='https://placehold.co/200x200?text=Image+Manquante'">
                     <h3>${produit.nom}</h3>
                     <p style="font-weight:bold; font-size:1.2em;">${produit.prix} €</p>
-                    <p>Stock : ${produit.nbStock}</p>
-                    <button onclick="alert('Ajouté au panier !')">Ajouter au panier</button>
+                    
+                    <p id="stock-${index}" style="color:${couleurStock}">${texteStock}</p>
+                    
+                    <button 
+                        onclick="ajouterAuPanier('${safeNom}', ${produit.prix}, '${safeImage}', ${produit.nbStock}, ${index})"
+                        ${disabled}>
+                        Ajouter au panier
+                    </button>
                 </div>
             `;
                     });
 
                     if (produits.length === 0) {
-                        container.innerHTML = "<p style='text-align:center; width:100%;'>Aucun produit trouvé pour le groupe Romain.</p>";
+                        container.innerHTML = "<p style='text-align:center; width:100%;'>Aucun produit trouvé.</p>";
                     }
                 })
 
         } catch (error) {
-            console.error("Erreur lors de la récupération :", error);
+            console.error("Erreur :", error);
             document.getElementById('liste-produits').innerHTML = "<p>Impossible de charger les produits.</p>";
         }
     }
-    
+
     chargerProduits();
 </script>
 </body>

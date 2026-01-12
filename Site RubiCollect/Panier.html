@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+<div id="navbar">
+
+        <img src="logo_rubicollect.png" id="logo">
+        <a href="Decouvrir.html">Découvrir</a>
+        <a href="Agir.html">Agir</a>
+        <a href="Decouvrir.html">
+            <img src="caddie.png" class="panier">
+        </a>
+        <a href="Boutique.html">Boutique Solidaire</a>
+</div>
+
+<div class="main-content">
+    <h1 style="text-align: center; color: #465FAF; margin-top: 30px;">Votre panier</h1>
+    <div id="liste-produits" class="produits-grid">
+    </div>
+</div>
+
+<div class="BottomBar"><img src="BottomBar.png">
+    <div class="soutenir">
+        <p>N'hésitez pas à nous soutenir avec un petit don !</p>
+    </div>
+    <button class="ButtonDon" id="boutonDon" style="height:60px;width:100px">Faire un don</button>
+    <img class="paypal" src="paypal.png" alt="paypal logo">
+    <img class="cb" src="cb.png" alt="cb logo">
+    <img class="robux" src="robux.png" alt="robux logo">
+
+    <p id="message-statut" style="text-align: center; margin: 10px 0;"></p>
+    
+    <div class="FormulaireContact">
+        <form id="contact-form-final">
+            <table>
+                <tr>
+                    <td><p>Votre nom/âge</p></td>
+                </tr>
+                <tr>
+                    <td><input type="text" id="firstname" name="firstname" maxlength="20" placeholder="Prénom" required></td>
+                    <td><input type="text" id="lastname" name="lastname" maxlength="20" placeholder="Nom" required></td>
+                    <td><input type="number" id="old" name="old" placeholder="Indiquez votre âge" required></td>
+                </tr>
+                <tr>
+                    <td><p>Moyen de contact</p></td>
+                </tr>
+                <tr>
+                    <td><input type="email" id="mail" name="mail" placeholder="Adresse mail" required></td>
+                    <td><input type="text" id="numero" name="numero" placeholder="Numero de telephone" required></td>
+                </tr>
+            </table>
+            <button class="ButtonContact" type="submit" style="height:60px;width:100px">Confirmer</button>
+        </form>
+    </div>
+    <div class="avis">
+        <p>Vous pouvez nous laisser un avis sur nos équipes et nos événements juste <a href="Avis.html">ici</a></p>
+    </div>
+</div>
+<script>
+    function chargerPanier() {
+        // Récupérer les données
+        let panier = JSON.parse(localStorage.getItem('monPanierRubicollect')) || [];
+        const container = document.getElementById('liste-produits');
+        container.innerHTML = "";
+
+        // Si le panier est vide
+        if (panier.length === 0) {
+            container.innerHTML = "<h3 style='grid-column: 1/-1; text-align:center; color:#465FAF;'>Votre panier est vide.</h3>";
+            // On masque le bouton de don/paiement si besoin, ou on laisse tel quel
+            return;
+        }
+
+        let total = 0;
+
+        // Générer l'affichage pour chaque article
+        panier.forEach((produit, index) => {
+            let sousTotal = produit.prix * produit.qte;
+            total += sousTotal;
+
+            container.innerHTML += `
+                <div class="card">
+                    <img src="${produit.image}" alt="${produit.nom}" onerror="this.src='https://placehold.co/200x200?text=Image+Manquante'">
+                    <h3>${produit.nom}</h3>
+                    <p>Quantité : ${produit.qte}</p>
+                    <p style="font-weight:bold; font-size:1.2em;">Prix unitaire : ${produit.prix} €</p>
+                    <p style="color: #465FAF">Sous-total : ${sousTotal.toFixed(2)} €</p>
+                    
+                    <button onclick="retirerDuPanier(${index})" style="background-color: #d9534f;">Retirer</button>
+                </div>
+            `;
+        });
+
+        // Ajouter un résumé du total en bas ou en haut de la grille
+        // Ici on l'ajoute avant la grille pour qu'il soit bien visible, ou on l'insère via JS avant la div bottomBar
+        let totalDiv = document.createElement('div');
+        totalDiv.style.gridColumn = "1 / -1";
+        totalDiv.style.textAlign = "center";
+        totalDiv.innerHTML = `<h2 style="color: #465FAF; background: white; padding: 10px; border-radius: 10px; display:inline-block;">Total du panier : ${total.toFixed(2)} €</h2>
+        <br><button onclick="viderPanier()" style="margin-top:10px; background-color: #d9534f; color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer;">Vider le panier</button>`;
+
+        container.prepend(totalDiv);
+    }
+
+    function retirerDuPanier(index) {
+        let panier = JSON.parse(localStorage.getItem('monPanierRubicollect')) || [];
+
+        // Si la quantité est > 1, on décrémente, sinon on supprime
+        if (panier[index].qte > 1) {
+            panier[index].qte -= 1;
+        } else {
+            panier.splice(index, 1); // Supprime l'élément à l'index donné
+        }
+
+        localStorage.setItem('monPanierRubicollect', JSON.stringify(panier));
+        chargerPanier(); // Recharge l'affichage
+    }
+
+    function viderPanier() {
+        if(confirm("Êtes-vous sûr de vouloir vider tout le panier ?")) {
+            localStorage.removeItem('monPanierRubicollect');
+            chargerPanier();
+        }
+    }
+
+    // Lancer le chargement au démarrage de la page
+    chargerPanier();
+</script>
+</body>
+</html>
