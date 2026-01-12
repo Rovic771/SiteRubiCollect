@@ -1,0 +1,198 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <title>Connexion - RubiCollect</title>
+    <link rel="stylesheet" href="stylesheet.css">
+    <style>
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+            margin-bottom: 100px;
+        }
+        .auth-box {
+            background-color: white;
+            border: 2px solid #465FAF;
+            border-radius: 20px;
+            padding: 30px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .auth-box h2 {
+            color: #465FAF;
+            font-family: "Pinecone_MVB";
+            margin-bottom: 20px;
+        }
+        .auth-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        .auth-box button {
+            width: 100%;
+            padding: 12px;
+            background-color: #465FAF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        .auth-box button:hover {
+            background-color: #34488b;
+        }
+        #msg-systeme {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+            min-height: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="navbar">
+    <img src="logo_rubicollect.png" id="logo">
+    <a href="Decouvrir.html">Découvrir</a>
+    <a href="Agir.html">Agir</a>
+    <a href="Panier.html">
+        <img src="caddie.png" class="panier">
+    </a>
+    <a href="Boutique.html">Boutique</a>
+</div>
+
+<div class="main-content">
+    <h1 style="text-align: center; color: #465FAF; margin-top: 30px;">Espace Membre</h1>
+
+    <p id="msg-systeme"></p>
+
+    <div class="auth-container">
+
+        <div class="auth-box">
+            <h2>Créer un compte</h2>
+            <input type="text" id="ins_nom" placeholder="Votre Nom">
+            <input type="text" id="ins_prenom" placeholder="Votre Prénom">
+            <input type="email" id="ins_email" placeholder="Votre Email">
+            <input type="password" id="ins_mdp" placeholder="Mot de passe">
+            <button onclick="inscription()">S'inscrire</button>
+        </div>
+
+        <div class="auth-box">
+            <h2>Se connecter</h2>
+            <input type="email" id="log_email" placeholder="Votre Email">
+            <input type="password" id="log_mdp" placeholder="Mot de passe">
+            <button onclick="connexion()">Connexion</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const API_URL = "https://ffw95cfxfg.execute-api.eu-north-1.amazonaws.com";
+    const GROUPE = "Romain";
+    
+    function inscription() {
+        const nom = document.getElementById("ins_nom").value;
+        const prenom = document.getElementById("ins_prenom").value;
+        
+        const mail = document.getElementById("ins_email").value;
+
+        const mdp = document.getElementById("ins_mdp").value;
+
+        if(!nom || !mail || !mdp) { // On vérifie "mail"
+            afficherMessage("Merci de remplir tous les champs !", "red");
+            return;
+        }
+
+        const dataToSend = {
+            nom: nom,
+            prenom: prenom,
+            mail: mail,  
+            mdp: mdp,
+            gp1: GROUPE
+        };
+
+        afficherMessage("Inscription en cours...", "blue");
+
+        fetch(`${API_URL}/clients?gp1=${GROUPE}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dataToSend)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Retour Inscription:", data);
+                if(data && !data.errorMessage) {
+                    afficherMessage("Compte créé avec succès ! Connectez-vous à droite.", "green");
+                    document.getElementById("ins_mdp").value = "";
+                    document.getElementById("ins_email").value = "";
+                } else {
+                    afficherMessage("Erreur création : " + (data.errorMessage || "Inconnue"), "red");
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                afficherMessage("Erreur réseau lors de l'inscription.", "red");
+            });
+    }
+
+    // --- FONCTION CONNEXION (NOUVELLE VERSION FIABLE) ---
+    function connexion() {
+        const emailSaisi = document.getElementById("log_email").value.trim();
+        const mdpSaisi = document.getElementById("log_mdp").value.trim();
+
+        if(!emailSaisi || !mdpSaisi) {
+            afficherMessage("Email et mot de passe requis.", "red");
+            return;
+        }
+
+        afficherMessage("Vérification des identifiants...", "blue");
+        
+        fetch(`${API_URL}/clients?gp1=${GROUPE}`)
+            .then(response => response.json())
+            .then(data => {
+                const clients = Array.isArray(data) ? data : (data.resources || []);
+
+                console.log("Clients trouvés :", clients.length);
+                
+                const utilisateurTrouve = clients.find(client =>
+                    client.mail === emailSaisi && client.mdp === mdpSaisi
+                );
+
+                if (utilisateurTrouve) {
+                    afficherMessage("Connexion réussie ! Redirection...", "green");
+                    
+                    localStorage.setItem("user_rubicollect", JSON.stringify(utilisateurTrouve));
+                    
+                    setTimeout(() => {
+                        window.location.href = "Boutique.html";
+                    }, 1500);
+                } else {
+                    afficherMessage("Email ou mot de passe incorrect.", "red");
+                }
+            })
+            .catch(error => {
+                console.error("Erreur Connexion:", error);
+                afficherMessage("Impossible de contacter le serveur.", "red");
+            });
+    }
+
+    function afficherMessage(texte, couleur) {
+        const msg = document.getElementById("msg-systeme");
+        msg.innerText = texte;
+        msg.style.color = couleur;
+    }
+</script>
+
+</body>
+</html>
