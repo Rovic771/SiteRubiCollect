@@ -1,169 +1,141 @@
 ﻿<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="fr">
 <head>
     <meta charset="utf-8" />
+    <title>Boutique - RubiCollect</title>
     <link rel="stylesheet" href="stylesheet.css">
 </head>
 <body>
-<div id="navbar">
 
-        <img src="logo_rubicollect.png" id="logo">
-        <a href="Decouvrir.html">Découvrir</a>
-        <a href="Agir.html">Agir</a>
-        <a href="Panier.html">
-            <img src="caddie.png" class="panier">
-        </a>
-        <a href="Boutique.html">Boutique Solidaire</a>
+<div id="navbar">
+    <img src="logo_rubicollect.png" id="logo">
+    <a href="Decouvrir.html">Découvrir</a>
+    <a href="Agir.html">Agir</a>
+    <a href="Panier.html">
+        <img src="caddie.png" class="panier">
+    </a>
+    <a href="Boutique.html">Boutique Solidaire</a>
 </div>
 
 <div class="main-content">
     <h1 style="text-align: center; color: #465FAF; margin-top: 30px;">Nos Produits</h1>
+    <button onclick="resetDemo()" style="display:block; margin: 0 auto; background:none; border:none; color:#ccc; cursor:pointer;">(Réinitialiser la démo)</button>
+
     <div id="liste-produits" class="produits-grid">
+        <p style="text-align:center;">Chargement des produits...</p>
     </div>
 </div>
 
-<div class="BottomBar"><img src="BottomBar.png">
+<div class="BottomBar">
+    <img src="BottomBar.png" style="width:100%">
     <div class="soutenir">
         <p>N'hésitez pas à nous soutenir avec un petit don !</p>
     </div>
     <button class="ButtonDon" id="boutonDon" style="height:60px;width:100px">Faire un don</button>
-    <img class="paypal" src="paypal.png" alt="paypal logo">
-    <img class="cb" src="cb.png" alt="cb logo">
-    <img class="robux" src="robux.png" alt="robux logo">
-
-    <p id="message-statut" style="text-align: center; margin: 10px 0;"></p>
-    
-    <div class="FormulaireContact">
-        <form id="contact-form-final">
-            <table>
-                <tr>
-                    <td><p>Votre nom/âge</p></td>
-                </tr>
-                <tr>
-                    <td><input type="text" id="firstname" name="firstname" maxlength="20" placeholder="Prénom" required></td>
-                    <td><input type="text" id="lastname" name="lastname" maxlength="20" placeholder="Nom" required></td>
-                    <td><input type="number" id="old" name="old" placeholder="Indiquez votre âge" required></td>
-                </tr>
-                <tr>
-                    <td><p>Moyen de contact</p></td>
-                </tr>
-                <tr>
-                    <td><input type="email" id="mail" name="mail" placeholder="Adresse mail" required></td>
-                    <td><input type="text" id="numero" name="numero" placeholder="Numero de telephone" required></td>
-                </tr>
-            </table>
-            <button class="ButtonContact" type="submit" style="height:60px;width:100px">Confirmer</button>
-        </form>
-    </div>
-    <div class="avis">
-        <p>Vous pouvez nous laisser un avis sur nos équipes et nos événements juste <a href="Avis.html">ici</a></p>
-    </div>
 </div>
-<script>
-    function getPanier() {
-        return JSON.parse(localStorage.getItem('monPanierRubicollect')) || [];
-    }
-    
-    function ajouterAuPanier(nom, prix, image, stockMax, indexId) {
-        let panier = getPanier();
-        let produitExistant = panier.find(p => p.nom === nom);
-        let qteDansPanier = produitExistant ? produitExistant.qte : 0;
-        
-        if (qteDansPanier >= stockMax) {
-            alert("Désolé, ce produit n'est plus en stock !");
-            return;
-        }
-        
-        if (produitExistant) {
-            produitExistant.qte += 1;
-        } else {
-            panier.push({
-                nom: nom,
-                prix: prix,
-                image: image,
-                qte: 1
-            });
-        }
 
-        localStorage.setItem('monPanierRubicollect', JSON.stringify(panier));
-        
-        const elementStock = document.getElementById(`stock-${indexId}`);
-        if (elementStock) {
-            let stockActuel = parseInt(elementStock.innerText.replace('Stock : ', ''));
-            let nouveauStock = stockActuel - 1;
-            elementStock.innerText = `Stock : ${nouveauStock}`;
-            
-            if (nouveauStock === 0) {
-                elementStock.style.color = "red";
-                elementStock.innerText = "Rupture de stock";
+<script>
+    const API_URL = "https://ffw95cfxfg.execute-api.eu-north-1.amazonaws.com";
+    const GROUPE = "Romain";
+
+    function chargerProduits() {
+        fetch(`${API_URL}/produits?gp1=${GROUPE}`)
+            .then(response => response.json())
+            .then(data => {
+                const produits = Array.isArray(data) ? data : (data.resources || []);
+                const container = document.getElementById('liste-produits');
+                container.innerHTML = "";
+
+                let memoireStocks = JSON.parse(localStorage.getItem("simulation_stocks")) || {};
+
+                produits.forEach((produit, index) => {
+                    const safeNom = produit.nom.replace(/'/g, "\\'");
+                    const safeImage = produit.image || "https://placehold.co/200x200?text=Image";
+
+                    let vraiStock = (memoireStocks[index] !== undefined) ? memoireStocks[index] : produit.nbStock;
+
+                    let texteStock = "En stock : " + vraiStock;
+                    let couleurStock = "green";
+                    let disabled = "";
+                    let styleBtn = "padding:10px; background-color:#465FAF; color:white; border:none; border-radius:5px; cursor:pointer;";
+
+                    if (vraiStock <= 0) {
+                        texteStock = "Rupture de stock";
+                        couleurStock = "red";
+                        disabled = "disabled";
+                        styleBtn = "padding:10px; background-color:grey; color:white; border:none; border-radius:5px; cursor:not-allowed;";
+                    }
+
+                    container.innerHTML += `
+                            <div class="card" style="border:1px solid #ddd; padding:10px; margin:10px; border-radius:10px; text-align:center;">
+                                <img src="${safeImage}" alt="${produit.nom}" style="width:150px; height:150px; object-fit:cover;">
+                                <h3>${produit.nom}</h3>
+                                <p style="font-weight:bold; font-size:1.2em; color:#465FAF;">${produit.prix} €</p>
+                                
+                                <p id="stock-display-${index}" data-stock="${vraiStock}" style="color:${couleurStock}; font-size:0.9em;">${texteStock}</p>
+                                
+                                <button 
+                                    id="btn-add-${index}"
+                                    onclick="ajouterAuPanier('${safeNom}', ${produit.prix}, '${safeImage}', ${index})"
+                                    ${disabled}
+                                    style="${styleBtn}">
+                                    Ajouter au panier
+                                </button>
+                            </div>
+                        `;
+                });
+
+                if (produits.length === 0) {
+                    container.innerHTML = "<p>Aucun produit trouvé sur le serveur.</p>";
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                document.getElementById('liste-produits').innerHTML = "<p>Impossible de charger les produits.</p>";
+            });
+    }
+
+    function ajouterAuPanier(nom, prix, image, index) {
+        let panier = JSON.parse(localStorage.getItem("panier")) || [];
+        let nouveauProduit = { id: index, nom: nom, prix: prix, image: image };
+        panier.push(nouveauProduit);
+        localStorage.setItem("panier", JSON.stringify(panier));
+
+        let stockElement = document.getElementById(`stock-display-${index}`);
+        let btnElement = document.getElementById(`btn-add-${index}`);
+        let currentStock = parseInt(stockElement.getAttribute('data-stock'));
+
+        if(currentStock > 0) {
+            currentStock = currentStock - 1;
+
+            let memoireStocks = JSON.parse(localStorage.getItem("simulation_stocks")) || {};
+            memoireStocks[index] = currentStock;
+            localStorage.setItem("simulation_stocks", JSON.stringify(memoireStocks));
+
+            stockElement.setAttribute('data-stock', currentStock);
+
+            if(currentStock === 0) {
+                stockElement.innerText = "Rupture de stock";
+                stockElement.style.color = "red";
+                btnElement.disabled = true;
+                btnElement.style.backgroundColor = "grey";
+                btnElement.style.cursor = "not-allowed";
+            } else {
+                stockElement.innerText = "En stock : " + currentStock;
             }
         }
 
-        alert(nom + " ajouté ! (Stock restant : " + (stockMax - qteDansPanier - 1) + ")");
+        alert(nom + " a été ajouté au panier !");
     }
-    
-    function chargerProduits() {
-        const targetUrl = "https://ffw95cfxfg.execute-api.eu-north-1.amazonaws.com/produits?gp1=Romain";
 
-        try {
-            fetch(targetUrl)
-                .then(response => response.json())
-                .then(data =>{
-                    const produits = Array.isArray(data) ? data : (data.resources || []);
-                    const container = document.getElementById('liste-produits');
-                    container.innerHTML = "";
-                    
-                    const panierActuel = getPanier();
-
-                    produits.forEach((produit, index) => {
-                        const safeNom = produit.nom.replace(/'/g, "\\'");
-                        const safeImage = produit.image.replace(/'/g, "\\'");
-                        
-                        const articleDansPanier = panierActuel.find(p => p.nom === produit.nom);
-                        const qteDejaPrise = articleDansPanier ? articleDansPanier.qte : 0;
-                        let stockVisuel = produit.nbStock - qteDejaPrise;
-                        
-                        let texteStock = `Stock : ${stockVisuel}`;
-                        let couleurStock = "black";
-                        let disabled = "";
-
-                        if (stockVisuel <= 0) {
-                            stockVisuel = 0;
-                            texteStock = "Rupture de stock";
-                            couleurStock = "red";
-                            disabled = "disabled style='background-color:grey; cursor:not-allowed;'";
-                        }
-
-                        container.innerHTML += `
-                <div class="card">
-                    <img src="${produit.image}" alt="${produit.nom}" onerror="this.src='https://placehold.co/200x200?text=Image+Manquante'">
-                    <h3>${produit.nom}</h3>
-                    <p style="font-weight:bold; font-size:1.2em;">${produit.prix} €</p>
-                    
-                    <p id="stock-${index}" style="color:${couleurStock}">${texteStock}</p>
-                    
-                    <button 
-                        onclick="ajouterAuPanier('${safeNom}', ${produit.prix}, '${safeImage}', ${produit.nbStock}, ${index})"
-                        ${disabled}>
-                        Ajouter au panier
-                    </button>
-                </div>
-            `;
-                    });
-
-                    if (produits.length === 0) {
-                        container.innerHTML = "<p style='text-align:center; width:100%;'>Aucun produit trouvé.</p>";
-                    }
-                })
-
-        } catch (error) {
-            console.error("Erreur :", error);
-            document.getElementById('liste-produits').innerHTML = "<p>Impossible de charger les produits.</p>";
-        }
+    function resetDemo() {
+        localStorage.removeItem("simulation_stocks");
+        localStorage.removeItem("panier");
+        location.reload();
     }
 
     chargerProduits();
 </script>
+
 </body>
 </html>

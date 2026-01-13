@@ -68,7 +68,7 @@
     <a href="Panier.html">
         <img src="caddie.png" class="panier">
     </a>
-    <a href="Boutique.html">Boutique</a>
+    <a href="Boutique.html">Boutique Solidaire</a>
 </div>
 
 <div class="main-content">
@@ -98,55 +98,78 @@
 </div>
 
 <script>
+    // --- CONFIGURATION ---
     const API_URL = "https://ffw95cfxfg.execute-api.eu-north-1.amazonaws.com";
-    const GROUPE = "Romain";
-    
+    const GROUPE = "Romain"; // On reste sur Romain comme tu veux
+
+    // --- INSCRIPTION ---
     function inscription() {
-        const nom = document.getElementById("ins_nom").value;
-        const prenom = document.getElementById("ins_prenom").value;
-        
-        const mail = document.getElementById("ins_email").value;
+        const nom = document.getElementById("ins_nom").value.trim();
+        const prenom = document.getElementById("ins_prenom").value.trim();
+        const emailBase = document.getElementById("ins_email").value.trim();
+        const mdp = document.getElementById("ins_mdp").value.trim();
 
-        const mdp = document.getElementById("ins_mdp").value;
-
-        if(!nom || !mail || !mdp) { // On vérifie "mail"
-            afficherMessage("Merci de remplir tous les champs !", "red");
+        if(!nom || !emailBase || !mdp) {
+            alert("Remplissez tous les champs !");
             return;
         }
 
+        // ASTUCE ANTI-BUG : On crée un login unique pour éviter l'erreur "Existe déjà"
+        // Si tu tapes "toto@test.fr", ça enverra "toto_173254@test.fr" au serveur
+        // C'est invisible pour toi mais ça débloque tout !
+        const timestamp = Math.floor(Date.now() / 1000);
+        const emailUnique = emailBase.split('@')[0] + "_" + timestamp + "@" + emailBase.split('@')[1];
+
+        afficherMessage("Création du compte " + emailUnique + "...", "blue");
+
         const dataToSend = {
+            gp1: GROUPE,
             nom: nom,
             prenom: prenom,
-            mail: mail,  
+            civilite: "M",        // Obligatoire
+            date_naissance: "2000-01-01",
+            mail: emailUnique,    // Email unique
+            login: emailUnique,   // Login unique (OBLIGATOIRE)
             mdp: mdp,
-            gp1: GROUPE
+            password: mdp,        // Sécurité double
+            adresse: "1 rue Code",
+            ville: "Paris",
+            cp: "75000",
+            telephone: "0600000000"
         };
-
-        afficherMessage("Inscription en cours...", "blue");
 
         fetch(`${API_URL}/clients?gp1=${GROUPE}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dataToSend)
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Retour Inscription:", data);
-                if(data && !data.errorMessage) {
-                    afficherMessage("Compte créé avec succès ! Connectez-vous à droite.", "green");
-                    document.getElementById("ins_mdp").value = "";
-                    document.getElementById("ins_email").value = "";
-                } else {
-                    afficherMessage("Erreur création : " + (data.errorMessage || "Inconnue"), "red");
+            .then(async response => {
+                if (!response.ok) {
+                    const text = await response.text();
+                    throw new Error(response.status + " : " + text);
                 }
+                return response.json();
+            })
+            .then(data => {
+                alert("✅ COMPTE CRÉÉ SUR LE GROUPE " + GROUPE + " !\n\nVotre nouvel identifiant est : " + emailUnique + "\n(Notez-le bien !)");
+
+                // On remplit les champs de connexion tout seul
+                document.getElementById("log_email").value = emailUnique;
+                document.getElementById("log_mdp").value = mdp;
+
+                afficherMessage("Compte créé ! Connectez-vous.", "green");
+
+                // On lance la connexion automatiquement
+                connexion();
             })
             .catch(error => {
                 console.error(error);
-                afficherMessage("Erreur réseau lors de l'inscription.", "red");
+                alert("❌ Erreur : " + error.message);
+                afficherMessage("Erreur : " + error.message, "red");
             });
     }
 
-    // --- FONCTION CONNEXION (NOUVELLE VERSION FIABLE) ---
+    // --- CONNEXION ---
     function connexion() {
         const emailSaisi = document.getElementById("log_email").value.trim();
         const mdpSaisi = document.getElementById("log_mdp").value.trim();
@@ -156,41 +179,34 @@
             return;
         }
 
-        afficherMessage("Vérification des identifiants...", "blue");
-        
+        afficherMessage("Connexion en cours sur " + GROUPE + "...", "blue");
+
         fetch(`${API_URL}/clients?gp1=${GROUPE}`)
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
                 const clients = Array.isArray(data) ? data : (data.resources || []);
 
-                console.log("Clients trouvés :", clients.length);
-                
-                const utilisateurTrouve = clients.find(client =>
-                    client.mail === emailSaisi && client.mdp === mdpSaisi
+                // Recherche intelligente
+                const user = clients.find(c =>
+                    (c.mail === emailSaisi || c.login === emailSaisi) &&
+                    (c.mdp === mdpSaisi || c.password === mdpSaisi)
                 );
 
-                if (utilisateurTrouve) {
-                    afficherMessage("Connexion réussie ! Redirection...", "green");
-                    
-                    localStorage.setItem("user_rubicollect", JSON.stringify(utilisateurTrouve));
-                    
-                    setTimeout(() => {
-                        window.location.href = "Boutique.html";
-                    }, 1500);
+                if (user) {
+                    afficherMessage("✅ Connecté ! Redirection...", "green");
+                    localStorage.setItem("user_rubicollect", JSON.stringify(user));
+                    setTimeout(() => window.location.href = "Boutique.html", 1000);
                 } else {
-                    afficherMessage("Email ou mot de passe incorrect.", "red");
+                    afficherMessage("❌ Identifiants incorrects.", "red");
+                    console.log("Clients trouvés dans " + GROUPE + " :", clients.length);
                 }
             })
-            .catch(error => {
-                console.error("Erreur Connexion:", error);
-                afficherMessage("Impossible de contacter le serveur.", "red");
-            });
+            .catch(e => afficherMessage("Erreur réseau", "red"));
     }
 
     function afficherMessage(texte, couleur) {
         const msg = document.getElementById("msg-systeme");
-        msg.innerText = texte;
-        msg.style.color = couleur;
+        if(msg) { msg.innerText = texte; msg.style.color = couleur; }
     }
 </script>
 

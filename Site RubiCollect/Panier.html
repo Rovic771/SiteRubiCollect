@@ -1,133 +1,221 @@
 ﻿<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="fr">
 <head>
     <meta charset="utf-8" />
+    <title>Mon Panier - RubiCollect</title>
     <link rel="stylesheet" href="stylesheet.css">
+    <style>
+        .panier-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 20px;
+        }
+        
+        .produit-item {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .produit-item:hover {
+            transform: scale(1.01);
+        }
+        
+        .img-panier {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-right: 20px;
+            border: 1px solid #eee;
+        }
+
+        .produit-info {
+            flex-grow: 1; 
+        }
+        .produit-info h3 {
+            margin: 0;
+            color: #465FAF;
+            font-size: 1.2em;
+        }
+        .produit-info small {
+            color: #888;
+        }
+
+        .produit-prix {
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #333;
+            margin-right: 20px;
+        }
+
+        /* Bouton poubelle */
+        .btn-supprimer {
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-supprimer:hover {
+            background: #e84118;
+        }
+        
+        .total-zone {
+            text-align: right;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+        }
+        .total-prix {
+            font-size: 2em;
+            font-weight: bold;
+            color: #465FAF;
+        }
+
+        .actions-panier {
+            display: flex;
+            justify-content: flex-end; 
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-vider {
+            background-color: #a4b0be;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .btn-commander {
+            background-color: #465FAF;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .btn-commander:hover { background-color: #2f3542; }
+    </style>
 </head>
 <body>
-<div id="navbar">
 
-        <img src="logo_rubicollect.png" id="logo">
-        <a href="Decouvrir.html">Découvrir</a>
-        <a href="Agir.html">Agir</a>
-        <a href="Decouvrir.html">
-            <img src="caddie.png" class="panier">
-        </a>
-        <a href="Boutique.html">Boutique Solidaire</a>
+<div id="navbar">
+    <img src="logo_rubicollect.png" id="logo">
+    <a href="Decouvrir.html">Découvrir</a>
+    <a href="Agir.html">Agir</a>
+    <a href="Panier.html">
+        <img src="caddie.png" class="panier">
+    </a>
+    <a href="Boutique.html">Boutique Solidaire</a>
 </div>
 
 <div class="main-content">
-    <h1 style="text-align: center; color: #465FAF; margin-top: 30px;">Votre panier</h1>
-    <div id="liste-produits" class="produits-grid">
+    <h1 style="text-align: center; color: #465FAF; margin-top: 30px;">Mon Panier</h1>
+
+    <div class="panier-container">
+        <div id="liste-produits"></div>
+
+        <div id="zone-total" class="total-zone" style="display:none;">
+            Total : <span id="total-panier" class="total-prix">0 €</span>
+
+            <div class="actions-panier">
+                <button onclick="viderPanier()" class="btn-vider">🗑️ Vider</button>
+                <button onclick="passerCommande()" class="btn-commander">✅ Valider la commande</button>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="BottomBar"><img src="BottomBar.png">
-    <div class="soutenir">
-        <p>N'hésitez pas à nous soutenir avec un petit don !</p>
-    </div>
-    <button class="ButtonDon" id="boutonDon" style="height:60px;width:100px">Faire un don</button>
-    <img class="paypal" src="paypal.png" alt="paypal logo">
-    <img class="cb" src="cb.png" alt="cb logo">
-    <img class="robux" src="robux.png" alt="robux logo">
-
-    <p id="message-statut" style="text-align: center; margin: 10px 0;"></p>
-    
-    <div class="FormulaireContact">
-        <form id="contact-form-final">
-            <table>
-                <tr>
-                    <td><p>Votre nom/âge</p></td>
-                </tr>
-                <tr>
-                    <td><input type="text" id="firstname" name="firstname" maxlength="20" placeholder="Prénom" required></td>
-                    <td><input type="text" id="lastname" name="lastname" maxlength="20" placeholder="Nom" required></td>
-                    <td><input type="number" id="old" name="old" placeholder="Indiquez votre âge" required></td>
-                </tr>
-                <tr>
-                    <td><p>Moyen de contact</p></td>
-                </tr>
-                <tr>
-                    <td><input type="email" id="mail" name="mail" placeholder="Adresse mail" required></td>
-                    <td><input type="text" id="numero" name="numero" placeholder="Numero de telephone" required></td>
-                </tr>
-            </table>
-            <button class="ButtonContact" type="submit" style="height:60px;width:100px">Confirmer</button>
-        </form>
-    </div>
-    <div class="avis">
-        <p>Vous pouvez nous laisser un avis sur nos équipes et nos événements juste <a href="Avis.html">ici</a></p>
-    </div>
+<div class="BottomBar">
+    <img src="BottomBar.png" style="width:100%">
 </div>
+
 <script>
-    function chargerPanier() {
-        // Récupérer les données
-        let panier = JSON.parse(localStorage.getItem('monPanierRubicollect')) || [];
-        const container = document.getElementById('liste-produits');
-        container.innerHTML = "";
+    document.addEventListener('DOMContentLoaded', afficherPanier);
 
-        // Si le panier est vide
+    function afficherPanier() {
+        const container = document.getElementById("liste-produits");
+        const zoneTotal = document.getElementById("zone-total");
+        const totalSpan = document.getElementById("total-panier");
+        
+        let panier = JSON.parse(localStorage.getItem("panier")) || [];
+
+        container.innerHTML = "";
+        
         if (panier.length === 0) {
-            container.innerHTML = "<h3 style='grid-column: 1/-1; text-align:center; color:#465FAF;'>Votre panier est vide.</h3>";
-            // On masque le bouton de don/paiement si besoin, ou on laisse tel quel
+            container.innerHTML = `
+                    <div style='text-align:center; padding:40px;'>
+                        <p style='font-size:1.5em; color:#888;'>Votre panier est vide</p>
+                        <a href="Boutique.html" style="color:#465FAF; text-decoration:underline;">Retourner à la boutique</a>
+                    </div>`;
+            zoneTotal.style.display = "none";
             return;
         }
-
+        
+        zoneTotal.style.display = "block";
         let total = 0;
 
-        // Générer l'affichage pour chaque article
         panier.forEach((produit, index) => {
-            let sousTotal = produit.prix * produit.qte;
-            total += sousTotal;
+            let prix = parseFloat(produit.prix);
+            if(isNaN(prix)) prix = 0;
+            total += prix;
+            let imageSrc = produit.image || "https://placehold.co/100x100?text=No+Image";
 
-            container.innerHTML += `
-                <div class="card">
-                    <img src="${produit.image}" alt="${produit.nom}" onerror="this.src='https://placehold.co/200x200?text=Image+Manquante'">
-                    <h3>${produit.nom}</h3>
-                    <p>Quantité : ${produit.qte}</p>
-                    <p style="font-weight:bold; font-size:1.2em;">Prix unitaire : ${produit.prix} €</p>
-                    <p style="color: #465FAF">Sous-total : ${sousTotal.toFixed(2)} €</p>
+            const card = document.createElement("div");
+            card.className = "produit-item";
+            card.innerHTML = `
+                    <img src="${imageSrc}" class="img-panier" alt="Produit">
                     
-                    <button onclick="retirerDuPanier(${index})" style="background-color: #d9534f;">Retirer</button>
-                </div>
-            `;
+                    <div class="produit-info">
+                        <h3>${produit.nom}</h3>
+                        <small>Ref: ${produit.id}</small>
+                    </div>
+
+                    <span class="produit-prix">${prix} €</span>
+                    
+                    <button class="btn-supprimer" onclick="supprimerArticle(${index})">✕</button>
+                `;
+            container.appendChild(card);
         });
-
-        // Ajouter un résumé du total en bas ou en haut de la grille
-        // Ici on l'ajoute avant la grille pour qu'il soit bien visible, ou on l'insère via JS avant la div bottomBar
-        let totalDiv = document.createElement('div');
-        totalDiv.style.gridColumn = "1 / -1";
-        totalDiv.style.textAlign = "center";
-        totalDiv.innerHTML = `<h2 style="color: #465FAF; background: white; padding: 10px; border-radius: 10px; display:inline-block;">Total du panier : ${total.toFixed(2)} €</h2>
-        <br><button onclick="viderPanier()" style="margin-top:10px; background-color: #d9534f; color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer;">Vider le panier</button>`;
-
-        container.prepend(totalDiv);
+        
+        totalSpan.innerText = total.toFixed(2) + " €";
     }
-
-    function retirerDuPanier(index) {
-        let panier = JSON.parse(localStorage.getItem('monPanierRubicollect')) || [];
-
-        // Si la quantité est > 1, on décrémente, sinon on supprime
-        if (panier[index].qte > 1) {
-            panier[index].qte -= 1;
-        } else {
-            panier.splice(index, 1); // Supprime l'élément à l'index donné
-        }
-
-        localStorage.setItem('monPanierRubicollect', JSON.stringify(panier));
-        chargerPanier(); // Recharge l'affichage
+    
+    function supprimerArticle(index) {
+        let panier = JSON.parse(localStorage.getItem("panier")) || [];
+        panier.splice(index, 1);
+        localStorage.setItem("panier", JSON.stringify(panier));
+        afficherPanier();
     }
 
     function viderPanier() {
-        if(confirm("Êtes-vous sûr de vouloir vider tout le panier ?")) {
-            localStorage.removeItem('monPanierRubicollect');
-            chargerPanier();
+        if(confirm("Tout supprimer ?")) {
+            localStorage.removeItem("panier");
+            afficherPanier();
         }
     }
-
-    // Lancer le chargement au démarrage de la page
-    chargerPanier();
+    
+    function passerCommande() {
+        alert("🎉 Commande validée avec succès !\nMerci de votre soutien.");
+        localStorage.removeItem("panier");
+        window.location.href = "Boutique.html";
+    }
 </script>
+
 </body>
 </html>
